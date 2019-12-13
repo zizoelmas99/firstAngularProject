@@ -1,0 +1,156 @@
+<br><br>
+//////////////////////////////// ngSwitchCase \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+<br><br>
+
+<style>
+    .active{
+        color: #fff !important;
+        background-color : #0f4b81;
+    }
+</style>
+
+<button class="btn" [class.active]="DefView == 'courses'" (click)='setView("courses")'>Courses</button>
+
+<button class="btn" [class.active]="DefView == 'certifications'" (click)='setView("certifications")'>Certifications</button>
+
+
+<div [ngSwitch]="DefView">
+    <div *ngSwitchCase="'courses'">List of Courses</div>
+    <div *ngSwitchCase="'certifications'">List of Certifictions</div>
+</div>
+
+
+<br><br>
+//////////////////////////////// ngClass \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+<br><br>
+
+<div>
+    <i (click)="isFav = !isFav" 
+    [ngClass]="{
+        'fas fa-heart' : isFav,
+        'far fa-heart' : !isFav
+        }"></i>
+</div>
+
+<br><br>
+//////////////////////////////// ngStyle \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+<br><br>
+
+<button class="btn"
+(click)="WhColor = !WhColor"
+    [ngStyle]="{
+        'background' : WhColor? 'red' : 'blue',
+        'color' : WhColor? 'green' : 'white'
+    }">
+    Click Me
+</button>
+
+<br><br>
+//////////////////////////////////// Custom Directive ////////////////////////
+<br><br>
+
+<input type="text" InputFormat [format]="'toLowerCase'">
+
+<br><br>
+//////////////////////////////// template driven form validation && ngForm && ngSubmit && ng2 validation \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+<br><br>
+<!--    template driven form validation For short forms -> Work On HTML File
+        Reactive form validation for big forms          -> Work On TS File
+-->
+
+<style>
+.form-control.ng-invalid.ng-touched{
+    border-color: #d6000059;
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+}
+</style>
+
+<form #form="ngForm" (ngSubmit)="onSubmit(form)">
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label>
+      <input type="email" class="form-control" name="email" ngModel #email="ngModel" 
+      (change)="logObj(email)" minlength="8" maxlength="16" pattern="zizo99@gmail.com" [notEqual]="'zaid'" required>
+    </div>
+    
+        <div *ngIf="email.touched && email.invalid" class="alert alert-danger">
+            <div *ngIf="email.errors?.notEqual">The Email musn't be equal 'zaid'</div>
+            <div *ngIf="email.errors.required">Please Enter your Email Address</div>
+            <div *ngIf="email.errors.minlength">Min Length is {{email.errors.minlength.requiredLength}} characters</div>
+            <div *ngIf="email.errors.maxlength">Max Length is {{email.errors.maxlength.requiredLength}} characters</div>
+            <div *ngIf="email.errors.pattern">Invalid Pattern try {{email.errors.pattern.requiredPattern}} </div>
+        </div>
+
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password" class="form-control" >
+    </div>
+    <button type="submit" [disabled]="form.invalid" class="btn btn-primary">Submit</button>
+  </form>
+
+
+<br><br>
+//////////////////////////////// Reactive Validation && ng2 validation && custom validators && AsyncCustomValidator \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+<br><br>
+<!--    template driven form validation For short forms -> Work On HTML File
+        Reactive form validation for big forms          -> Work On TS File
+-->
+
+  <form [formGroup]="form2">
+    <!-- Email Control -->
+    <div class="form-group">
+      <label for="Email2">Email address</label>
+      <input type="email" class="form-control" id="Email2" formControlName="email2">
+    </div>
+        <div *ngIf="email2.touched && email2.invalid" class="alert alert-danger">
+            <div *ngIf="email2.errors.required">This Field is Required</div>
+            <div *ngIf="email2.errors.asyncUniquness">This Email already Exist</div>
+        </div>            
+        <!-- waiting respomse from server (animatiom) -->
+        <div *ngIf="email2.pending">    
+            <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    <!-- Password Control -->
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password" class="form-control" id="Password2" formControlName="password2">
+    </div>
+        <div *ngIf="password2.touched && password2.invalid" class="alert alert-danger">
+            <div *ngIf="password2.errors.noSpacesAllowed">The password shoudn't be contain spaces</div>
+        </div>
+    <!-- Age Control -->
+    <div class="form-group">
+        <label for="exampleInputAge1">Age</label>
+        <input type="text" class="form-control" id="Age2" formControlName="age2">
+    </div>
+        <div *ngIf="age2.touched && age2.invalid" class="alert alert-danger">
+            <div *ngIf="age2.errors.range">Your Age must be between 18 and 25</div>
+            <div *ngIf="age2.errors.max">Max Age is 20 year old</div>
+        </div>
+
+    <button type="submit" [disabled]="form2.invalid" class="btn btn-primary">Submit</button>
+  </form>
+
+
+<br><br>
+//////////////////////////////// Get Read Obj From HTTP && HTTP Create method to add new object \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+<br><br>
+
+<input type="text" class="form-control" #title (keyup.enter)="createPost(title)" placeholder="New Post">
+
+<table class="table table-striped table-dark">
+    <thead>
+      <tr> <th scope="col">UserId</th> <th scope="col">Id</th> <th scope="col">Title</th> <th scope="col">Body</th> </tr>
+    </thead>
+    <tbody *ngFor="let post of posts; let i=index">
+      <tr  *ngIf="i < 4">
+        <th scope="row">{{ post.userId }}</th>
+        <td>{{ post.id }}</td>
+        <td>{{ post.title }}</td>
+        <td>{{ post.body }}</td>
+        <td><button class="btn btn-success" (click)="updatePost(post,title.value)">Update</button></td>
+        <td><button class="btn btn-danger" (click)="deletePost(post)">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
